@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematika Kelas 4: Pola Gambar & Bilangan</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', 'Nunito', sans-serif;
+            background-color: #f0f9ff;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .btn-bounce {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-bounce:hover {
+            transform: scale(1.05) translateY(-3px);
+        }
+        .btn-bounce:active {
+            transform: scale(0.95);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e0f2fe;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gradient-to-b from-sky-200 via-indigo-100 to-purple-100 text-slate-800">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b-4 border-yellow-400 px-4 py-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <!-- Logo Title -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchGame('menu')">
+                <div class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-2xl shadow-lg transform -rotate-6">
+                    📐
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-indigo-700 tracking-wider">Matematika Kelas 4</h1>
+                    <p class="text-xs font-bold text-pink-500">Pola Gambar & Bilangan</p>
+                </div>
+            </div>
+
+            <!-- Stats & Sound Controls -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1 bg-amber-100 border-2 border-amber-300 px-3 py-1.5 rounded-full shadow-sm">
+                    <span class="text-xl">⭐</span>
+                    <span id="total-stars" class="font-extrabold text-amber-700 text-lg">0</span>
+                </div>
+                <button id="sound-toggle" onclick="toggleSound()" class="p-2.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-full border-2 border-indigo-300 transition">
+                    <i data-lucide="volume-2" class="w-6 h-6"></i>
+                </button>
+                <button onclick="switchGame('menu')" class="btn-bounce bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-2xl flex items-center gap-2 shadow-md text-sm md:text-base">
+                    <i data-lucide="grid" class="w-5 h-5"></i> Menu Utama
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
+
+        <!-- ================= MAIN MENU ================= -->
+        <div id="game-menu" class="space-y-6 my-auto">
+            <div class="text-center space-y-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-800 drop-shadow-sm">Pilih Tantangan Matematika! 🔢</h2>
+                <p class="text-slate-600 font-bold">Pilih salah satu mini-game di bawah untuk mulai belajar sambil bermain!</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Game 1 Card -->
+                <div onclick="switchGame('drag-drop')" class="btn-bounce bg-gradient-to-br from-yellow-300 to-amber-400 p-6 rounded-3xl border-4 border-white shadow-xl cursor-pointer text-slate-800 flex flex-col justify-between h-52 relative overflow-hidden group">
+                    <div class="absolute -right-4 -bottom-4 text-7xl opacity-20 group-hover:scale-125 transition">🍎</div>
+                    <div>
+                        <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow">🧺</div>
+                        <h3 class="text-xl font-black text-amber-950">1. Pasang Gambar</h3>
+                        <p class="text-sm font-bold text-amber-900/80 mt-1">Hitung jumlah gambar dan pasangkan ke kartu angka yang sesuai!</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-black bg-white/90 text-amber-950 px-3 py-1 rounded-full w-max shadow">Main Sekarang →</span>
+                </div>
+
+                <!-- Game 2 Card -->
+                <div onclick="switchGame('word-search')" class="btn-bounce bg-gradient-to-br from-teal-300 to-emerald-400 p-6 rounded-3xl border-4 border-white shadow-xl cursor-pointer text-slate-800 flex flex-col justify-between h-52 relative overflow-hidden group">
+                    <div class="absolute -right-4 -bottom-4 text-7xl opacity-20 group-hover:scale-125 transition">🔍</div>
+                    <div>
+                        <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow">🔤</div>
+                        <h3 class="text-xl font-black text-emerald-950">2. Cari Kata</h3>
+                        <p class="text-sm font-bold text-emerald-900/80 mt-1">Temukan 10 kata istilah matematika tersembunyi dalam kotak!</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-black bg-white/90 text-emerald-950 px-3 py-1 rounded-full w-max shadow">Main Sekarang →</span>
+                </div>
+
+                <!-- Game 3 Card -->
+                <div onclick="switchGame('fill-vowel')" class="btn-bounce bg-gradient-to-br from-pink-300 to-rose-400 p-6 rounded-3xl border-4 border-white shadow-xl cursor-pointer text-slate-800 flex flex-col justify-between h-52 relative overflow-hidden group">
+                    <div class="absolute -right-4 -bottom-4 text-7xl opacity-20 group-hover:scale-125 transition">➕</div>
+                    <div>
+                        <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow">❓</div>
+                        <h3 class="text-xl font-black text-rose-950">3. Penjumlahan Rumpang</h3>
+                        <p class="text-sm font-bold text-rose-900/80 mt-1">Lengkapi titik-titik penjumlahan dan pola angka yang hilang!</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-black bg-white/90 text-rose-950 px-3 py-1 rounded-full w-max shadow">Main Sekarang →</span>
+                </div>
+
+                <!-- Game 4 Card -->
+                <div onclick="switchGame('scramble')" class="btn-bounce bg-gradient-to-br from-purple-300 to-indigo-400 p-6 rounded-3xl border-4 border-white shadow-xl cursor-pointer text-slate-800 flex flex-col justify-between h-52 relative overflow-hidden group">
+                    <div class="absolute -right-4 -bottom-4 text-7xl opacity-20 group-hover:scale-125 transition">🔀</div>
+                    <div>
+                        <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow">🎲</div>
+                        <h3 class="text-xl font-black text-indigo-950">4. Susun Huruf</h3>
+                        <p class="text-sm font-bold text-indigo-900/80 mt-1">Susun urutan huruf acak menjadi kata matematika yang benar!</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-black bg-white/90 text-indigo-950 px-3 py-1 rounded-full w-max shadow">Main Sekarang →</span>
+                </div>
+
+                <!-- Game 5 Card -->
+                <div onclick="switchGame('match-shapes')" class="btn-bounce bg-gradient-to-br from-cyan-300 to-blue-400 p-6 rounded-3xl border-4 border-white shadow-xl cursor-pointer text-slate-800 flex flex-col justify-between h-52 relative overflow-hidden group">
+                    <div class="absolute -right-4 -bottom-4 text-7xl opacity-20 group-hover:scale-125 transition">📐</div>
+                    <div>
+                        <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow">🔷</div>
+                        <h3 class="text-xl font-black text-blue-950">5. Cari Bentuk Geometri</h3>
+                        <p class="text-sm font-bold text-blue-900/80 mt-1">Jodohkan bentuk geometri (Segitiga, Persegi, dll) yang sama!</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-black bg-white/90 text-blue-950 px-3 py-1 rounded-full w-max shadow">Main Sekarang →</span>
+                </div>
+
+                <!-- Game 6 Card -->
+                <div onclick="switchGame('arrange-order')" class="btn-bounce bg-gradient-to-br from-orange-300 to-red-400 p-6 rounded-3xl border-4 border-white shadow-xl cursor-pointer text-slate-800 flex flex-col justify-between h-52 relative overflow-hidden group">
+                    <div class="absolute -right-4 -bottom-4 text-7xl opacity-20 group-hover:scale-125 transition">📊</div>
+                    <div>
+                        <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow">🔢</div>
+                        <h3 class="text-xl font-black text-red-950">6. Urutkan Pola Gambar</h3>
+                        <p class="text-sm font-bold text-red-900/80 mt-1">Urutkan pola jumlah benda dari terbesar/terkecil secara tepat!</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs font-black bg-white/90 text-red-950 px-3 py-1 rounded-full w-max shadow">Main Sekarang →</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= GAME CONTAINERS ================= -->
+
+        <!-- Game Header Wrapper -->
+        <div id="game-container" class="hidden flex-col items-center max-w-4xl mx-auto w-full">
+            <!-- Header Permainan -->
+            <div class="w-full bg-white rounded-3xl p-4 md:p-6 mb-6 card-shadow border-4 border-indigo-200 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h2 id="game-title" class="text-2xl md:text-3xl font-extrabold text-indigo-700">Judul Permainan</h2>
+                    <p id="game-desc" class="text-sm md:text-base text-slate-600 font-bold">Instruksi singkat permainan ada di sini.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="resetCurrentGame()" class="btn-bounce bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold px-4 py-2 rounded-2xl flex items-center gap-2 border-2 border-amber-300 shadow">
+                        <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Ulangi
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area for Games -->
+            <div class="w-full bg-white/90 backdrop-blur rounded-3xl p-4 md:p-8 card-shadow border-4 border-white min-h-[420px] flex flex-col items-center justify-center relative overflow-hidden">
+                
+                <!-- GAME 1: DRAG AND DROP -->
+                <div id="view-drag-drop" class="game-view w-full hidden flex-col items-center">
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <!-- Source Items -->
+                        <div class="bg-indigo-50 p-6 rounded-3xl border-2 border-indigo-200">
+                            <h3 class="text-lg font-bold text-indigo-800 mb-4 text-center">Hitung & Tarik Gambar Benda 🍎</h3>
+                            <div id="dd-sources" class="grid grid-cols-2 gap-4 justify-items-center"></div>
+                        </div>
+                        <!-- Target Zones -->
+                        <div class="bg-amber-50 p-6 rounded-3xl border-2 border-amber-200">
+                            <h3 class="text-lg font-bold text-amber-800 mb-4 text-center">Tempelkan pada Kartu Angka 🔢</h3>
+                            <div id="dd-targets" class="flex flex-col gap-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAME 2: WORD SEARCH -->
+                <div id="view-word-search" class="game-view w-full hidden flex-col items-center gap-6">
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-center justify-center">
+                        <!-- Canvas Grid -->
+                        <div class="relative bg-amber-100 p-3 rounded-3xl border-4 border-amber-400 shadow-inner">
+                            <canvas id="ws-canvas" class="cursor-pointer touch-none rounded-2xl"></canvas>
+                        </div>
+                        <!-- Target Words -->
+                        <div class="bg-indigo-50 p-6 rounded-3xl border-2 border-indigo-200 min-w-[240px] max-h-[380px] overflow-y-auto">
+                            <h3 class="text-lg font-bold text-indigo-900 mb-3 border-b-2 border-indigo-200 pb-2">10 Kata Matematika:</h3>
+                            <ul id="ws-word-list" class="grid grid-cols-2 md:grid-cols-1 gap-2 font-bold text-base text-slate-700"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAME 3: PENJUMLAHAN RUMPANG -->
+                <div id="view-fill-vowel" class="game-view w-full hidden flex-col items-center space-y-6">
+                    <div class="flex flex-col items-center bg-sky-50 p-6 md:p-8 rounded-3xl border-2 border-sky-200 w-full max-w-lg">
+                        <div id="fv-question-number" class="text-sm font-black bg-sky-200 text-sky-800 px-4 py-1 rounded-full mb-2">Soal 1 dari 3</div>
+                        <div id="fv-hint" class="text-xl font-extrabold text-indigo-900 mb-6 text-center">Berapa angka yang tepat untuk melengkapi penjumlahan rumpang?</div>
+                        
+                        <!-- Mathematical Equation Display -->
+                        <div id="fv-equation-display" class="flex items-center gap-3 justify-center mb-8 bg-white p-6 rounded-2xl border-4 border-sky-300 shadow-md"></div>
+
+                        <!-- Answer Option Buttons -->
+                        <div id="fv-options" class="flex gap-4 flex-wrap justify-center w-full"></div>
+                    </div>
+                </div>
+
+                <!-- GAME 4: WORD SCRAMBLE -->
+                <div id="view-scramble" class="game-view w-full hidden flex-col items-center space-y-6">
+                    <div class="flex flex-col items-center bg-purple-50 p-6 md:p-8 rounded-3xl border-2 border-purple-200 w-full max-w-xl">
+                        <div id="ws-question-number" class="text-sm font-black bg-purple-200 text-purple-800 px-4 py-1 rounded-full mb-2">Kata 1 dari 3</div>
+                        <p id="ws-hint" class="text-slate-700 font-bold mb-6 text-center text-lg">Susun ubin huruf acak di bawah ini menjadi istilah matematika!</p>
+
+                        <!-- Answer Slots -->
+                        <div id="scramble-slots" class="flex gap-2 min-h-[68px] p-3 bg-white/90 rounded-2xl border-2 border-dashed border-purple-300 w-full justify-center mb-6 overflow-x-auto"></div>
+
+                        <!-- Available Letter Tiles -->
+                        <div id="scramble-tiles" class="flex gap-2 flex-wrap justify-center"></div>
+                    </div>
+                </div>
+
+                <!-- GAME 5: MATCH SHAPES -->
+                <div id="view-match-shapes" class="game-view w-full hidden flex-col items-center space-y-6">
+                    <p class="text-indigo-900 font-bold text-center text-base">Pilih 1 Bentuk Geometri dari Kelompok A, lalu cari kembarnya di Kelompok B!</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-2xl">
+                        <!-- Group A -->
+                        <div class="bg-pink-50 p-6 rounded-3xl border-2 border-pink-200 flex flex-col items-center">
+                            <h3 class="font-extrabold text-pink-700 mb-4 text-lg">Kelompok A</h3>
+                            <div id="shapes-group-a" class="grid grid-cols-2 gap-4"></div>
+                        </div>
+                        <!-- Group B -->
+                        <div class="bg-blue-50 p-6 rounded-3xl border-2 border-blue-200 flex flex-col items-center">
+                            <h3 class="font-extrabold text-blue-700 mb-4 text-lg">Kelompok B</h3>
+                            <div id="shapes-group-b" class="grid grid-cols-2 gap-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAME 6: ARRANGE ORDER -->
+                <div id="view-arrange-order" class="game-view w-full hidden flex-col items-center space-y-6">
+                    <div class="flex flex-col items-center text-center">
+                        <div id="order-level-badge" class="text-sm font-black bg-orange-200 text-orange-900 px-4 py-1 rounded-full mb-1">Variasi 1 dari 2</div>
+                        <h3 id="order-story-title" class="text-xl md:text-2xl font-extrabold text-orange-900">Judul Variasi Pola</h3>
+                    </div>
+                    
+                    <!-- Drop Area / Sequence Slots -->
+                    <div id="order-slots" class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full"></div>
+
+                    <!-- Source Cards -->
+                    <div class="bg-orange-50 p-4 rounded-3xl border-2 border-orange-200 w-full">
+                        <p class="text-xs md:text-sm font-bold text-orange-800 mb-3 text-center">Pilihan Kartu Gambar (Klik atau Tarik kartu ke kotak urutan di atas):</p>
+                        <div id="order-sources" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Selebrasi / Modal Menang -->
+    <div id="win-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-4 border-4 border-yellow-400 card-shadow transform scale-95 transition-all">
+            <div class="text-7xl animate-bounce">🏆</div>
+            <h3 class="text-3xl font-black text-indigo-700">Hebat Sekali! 🎉</h3>
+            <p class="text-slate-600 font-bold">Kamu berhasil menyelesaikan permainan matematika ini dengan sangat baik!</p>
+            <div class="flex justify-center gap-2 text-4xl my-2">
+                <span>⭐</span><span>⭐</span><span>⭐</span>
+            </div>
+            <div class="flex justify-center gap-4 pt-2">
+                <button onclick="closeWinModal(); resetCurrentGame();" class="btn-bounce bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold px-6 py-3 rounded-2xl shadow-lg border-2 border-amber-300">
+                    Main Lagi 🔄
+                </button>
+                <button onclick="closeWinModal(); switchGame('menu');" class="btn-bounce bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-2xl shadow-lg">
+                    Menu Utama 🏠
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // ================= GLOBAL STATE & UTILS =================
+        let currentGame = 'menu';
+        let stars = 0;
+        let soundEnabled = true;
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Sound Effects Engine (Web Audio API)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                // Happy Arpeggio
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            } else if (type === 'wrong') {
+                // Low Buzz
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.setValueAtTime(140, now + 0.15);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'pop') {
+                // Short Click / Pop
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'win') {
+                // Fanfare
+                const notes = [523.25, 659.25, 783.99, 1046.50, 880, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+                    noteOsc.type = 'triangle';
+                    noteOsc.frequency.value = freq;
+                    noteGain.gain.setValueAtTime(0.25, now + idx * 0.12);
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.12 + 0.25);
+                    noteOsc.start(now + idx * 0.12);
+                    noteOsc.stop(now + idx * 0.12 + 0.25);
+                });
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('sound-toggle');
+            btn.innerHTML = soundEnabled ? 
+                '<i data-lucide="volume-2" class="w-6 h-6"></i>' : 
+                '<i data-lucide="volume-x" class="w-6 h-6"></i>';
+            lucide.createIcons();
+        }
+
+        function addStars(count) {
+            stars += count;
+            document.getElementById('total-stars').innerText = stars;
+        }
+
+        function triggerWinCelebration() {
+            playSound('win');
+            addStars(3);
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+            document.getElementById('win-modal').classList.remove('hidden');
+            document.getElementById('win-modal').classList.add('flex');
+        }
+
+        function closeWinModal() {
+            document.getElementById('win-modal').classList.add('hidden');
+            document.getElementById('win-modal').classList.remove('flex');
+        }
+
+        // CRITICAL REQUIREMENT: Render ONLY pure visual elements with NO text or numbers!
+        function renderEmojiRepeatedPure(emoji, count) {
+            let html = '<div class="grid grid-cols-4 gap-1.5 p-2 bg-indigo-50/80 rounded-xl w-full justify-items-center items-center">';
+            for(let i = 0; i < count; i++) {
+                html += `<span class="text-2xl leading-none select-none">${emoji}</span>`;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        // ================= NAVIGATION ROUTER =================
+        function switchGame(gameId) {
+            playSound('pop');
+            currentGame = gameId;
+
+            const menu = document.getElementById('game-menu');
+            const container = document.getElementById('game-container');
+            const views = document.querySelectorAll('.game-view');
+
+            if (gameId === 'menu') {
+                menu.classList.remove('hidden');
+                container.classList.add('hidden');
+                container.classList.remove('flex');
+            } else {
+                menu.classList.add('hidden');
+                container.classList.remove('hidden');
+                container.classList.add('flex');
+
+                views.forEach(v => v.classList.add('hidden'));
+                views.forEach(v => v.classList.remove('flex'));
+
+                const targetView = document.getElementById(`view-${gameId}`);
+                targetView.classList.remove('hidden');
+                targetView.classList.add('flex');
+
+                // Set Header Info & Init Logic
+                const titleEl = document.getElementById('game-title');
+                const descEl = document.getElementById('game-desc');
+
+                switch(gameId) {
+                    case 'drag-drop':
+                        titleEl.innerText = '1. Pasang Gambar & Jumlah 🧺';
+                        descEl.innerText = 'Hitung kumpulan gambar buah (maksimal 20) dan pasangkan ke kartu angka yang sesuai!';
+                        initDragDrop();
+                        break;
+                    case 'word-search':
+                        titleEl.innerText = '2. Cari Kata Matematika 🔍';
+                        descEl.innerText = 'Cari dan tarik garis untuk menemukan 10 kata matematika tersembunyi!';
+                        initWordSearch();
+                        break;
+                    case 'fill-vowel':
+                        titleEl.innerText = '3. Penjumlahan Rumpang ➕';
+                        descEl.innerText = 'Pilih angka yang tepat untuk melengkapi persamaan penjumlahan!';
+                        initFillVowel();
+                        break;
+                    case 'scramble':
+                        titleEl.innerText = '4. Susun Huruf Matematika 🎲';
+                        descEl.innerText = 'Susun huruf-huruf acak menjadi istilah matematika yang tepat!';
+                        initScramble();
+                        break;
+                    case 'match-shapes':
+                        titleEl.innerText = '5. Cari Bentuk Geometri Sama 📐';
+                        descEl.innerText = 'Pilih 1 bentuk geometri di Kelompok A, lalu klik kembarnya di Kelompok B!';
+                        initMatchShapes();
+                        break;
+                    case 'arrange-order':
+                        titleEl.innerText = '6. Urutkan Pola Gambar 📊';
+                        descEl.innerText = 'Urutkan kartu pola gambar berdasarkan jumlah benda dari terbesar/terkecil!';
+                        initArrangeOrder();
+                        break;
+                }
+            }
+        }
+
+        function resetCurrentGame() {
+            if (currentGame !== 'menu') {
+                switchGame(currentGame);
+            }
+        }
+
+        // ================= GAME 1: DRAG AND DROP (NO TEXT ON IMAGE CARDS) =================
+        const ddData = [
+            { id: 1, count: 12, emoji: '🍎', target: '12' },
+            { id: 2, count: 15, emoji: '🍊', target: '15' },
+            { id: 3, count: 8, emoji: '🍌', target: '8' },
+            { id: 4, count: 18, emoji: '🍓', target: '18' }
+        ];
+
+        function initDragDrop() {
+            const sourcesContainer = document.getElementById('dd-sources');
+            const targetsContainer = document.getElementById('dd-targets');
+            sourcesContainer.innerHTML = '';
+            targetsContainer.innerHTML = '';
+
+            // Shuffle sources
+            const shuffledSources = [...ddData].sort(() => Math.random() - 0.5);
+            shuffledSources.forEach(item => {
+                const el = document.createElement('div');
+                el.id = `dd-item-${item.id}`;
+                el.draggable = true;
+                el.className = 'w-full bg-white rounded-2xl border-4 border-indigo-300 p-3 flex items-center justify-center cursor-grab btn-bounce shadow-md text-center min-h-[110px]';
+                
+                // PURE VISUALS ONLY - NO TEXT BELOW!
+                el.innerHTML = renderEmojiRepeatedPure(item.emoji, item.count);
+                
+                // Drag Events
+                el.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                    playSound('pop');
+                });
+
+                // Touch/Click Selection
+                el.onclick = () => handleDDClickSelect(item, el);
+
+                sourcesContainer.appendChild(el);
+            });
+
+            // Targets (Shuffle target numbers)
+            const shuffledTargets = [...ddData].sort(() => Math.random() - 0.5);
+            shuffledTargets.forEach(item => {
+                const target = document.createElement('div');
+                target.dataset.targetId = item.id;
+                target.className = 'dd-target min-h-[85px] bg-white rounded-2xl border-4 border-dashed border-amber-300 p-3 flex items-center justify-between transition-all';
+                target.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-14 h-14 bg-amber-400 text-amber-950 font-black text-2xl rounded-2xl flex items-center justify-center border-2 border-amber-500 shadow">${item.target}</span>
+                    </div>
+                    <div class="dd-slot flex-1 ml-4 min-h-[60px] bg-amber-100/60 rounded-xl border-2 border-amber-200 flex items-center justify-center text-xs font-bold text-slate-400 p-2">
+                        Tempel Di Sini
+                    </div>
+                `;
+
+                // Drop Events
+                target.addEventListener('dragover', (e) => e.preventDefault());
+                target.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const draggedId = e.dataTransfer.getData('text/plain');
+                    checkDDMatch(draggedId, item.id, target);
+                });
+
+                // Click target logic for touch screens
+                target.onclick = () => {
+                    if (selectedDDSource) {
+                        checkDDMatch(selectedDDSource.item.id, item.id, target);
+                    }
+                };
+
+                targetsContainer.appendChild(target);
+            });
+        }
+
+        let selectedDDSource = null;
+        function handleDDClickSelect(item, el) {
+            playSound('pop');
+            document.querySelectorAll('#dd-sources > div').forEach(d => d.classList.remove('ring-4', 'ring-pink-500'));
+            el.classList.add('ring-4', 'ring-pink-500');
+            selectedDDSource = { item, el };
+        }
+
+        function checkDDMatch(sourceId, targetId, targetEl) {
+            if (sourceId == targetId) {
+                playSound('correct');
+                const sourceEl = document.getElementById(`dd-item-${sourceId}`);
+                targetEl.querySelector('.dd-slot').replaceWith(sourceEl);
+                sourceEl.draggable = false;
+                sourceEl.onclick = null;
+                sourceEl.classList.remove('cursor-grab', 'ring-4', 'ring-pink-500');
+                targetEl.classList.add('border-solid', 'border-emerald-400', 'bg-emerald-50');
+                selectedDDSource = null;
+
+                checkDDWin();
+            } else {
+                playSound('wrong');
+            }
+        }
+
+        function checkDDWin() {
+            const remaining = document.getElementById('dd-sources').children.length;
+            if (remaining === 0) {
+                setTimeout(triggerWinCelebration, 500);
+            }
+        }
+
+        // ================= GAME 2: WORD SEARCH (10 Kata Matematika) =================
+        const wsWords = [
+            'BILANGAN', 'JUMLAH', 'ANGKA', 'TAMBAH', 'KURANG',
+            'KALI', 'BAGI', 'POLA', 'CACAH', 'FAKTOR'
+        ];
+        let wsGridSize = 9;
+        let wsGrid = [];
+        let wsCellSize = 36;
+        let wsFoundWords = [];
+        let wsIsSelecting = false;
+        let wsStartCell = null;
+        let wsCurrentCell = null;
+
+        function initWordSearch() {
+            wsFoundWords = [];
+            renderWSWordList();
+
+            wsGrid = Array(wsGridSize).fill(null).map(() => Array(wsGridSize).fill(''));
+
+            wsWords.forEach(word => {
+                let placed = false;
+                let attempts = 0;
+                while (!placed && attempts < 100) {
+                    attempts++;
+                    const dir = Math.random() > 0.5 ? 'H' : 'V';
+                    const row = Math.floor(Math.random() * (dir === 'V' ? wsGridSize - word.length + 1 : wsGridSize));
+                    const col = Math.floor(Math.random() * (dir === 'H' ? wsGridSize - word.length + 1 : wsGridSize));
+
+                    let canPlace = true;
+                    for (let i = 0; i < word.length; i++) {
+                        const r = dir === 'V' ? row + i : row;
+                        const c = dir === 'H' ? col + i : col;
+                        if (wsGrid[r][c] !== '' && wsGrid[r][c] !== word[i]) {
+                            canPlace = false;
+                            break;
+                        }
+                    }
+
+                    if (canPlace) {
+                        for (let i = 0; i < word.length; i++) {
+                            const r = dir === 'V' ? row + i : row;
+                            const c = dir === 'H' ? col + i : col;
+                            wsGrid[r][c] = word[i];
+                        }
+                        placed = true;
+                    }
+                }
+            });
+
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            for (let r = 0; r < wsGridSize; r++) {
+                for (let c = 0; c < wsGridSize; c++) {
+                    if (wsGrid[r][c] === '') {
+                        wsGrid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+                    }
+                }
+            }
+
+            const canvas = document.getElementById('ws-canvas');
+            canvas.width = wsGridSize * wsCellSize;
+            canvas.height = wsGridSize * wsCellSize;
+
+            drawWSGrid();
+
+            canvas.onmousedown = canvas.ontouchstart = (e) => {
+                e.preventDefault();
+                const pos = getWSCellPos(e);
+                wsIsSelecting = true;
+                wsStartCell = pos;
+                wsCurrentCell = pos;
+                drawWSGrid();
+            };
+
+            canvas.onmousemove = canvas.ontouchmove = (e) => {
+                if (!wsIsSelecting) return;
+                wsCurrentCell = getWSCellPos(e);
+                drawWSGrid();
+            };
+
+            canvas.onmouseup = canvas.ontouchend = () => {
+                if (!wsIsSelecting) return;
+                wsIsSelecting = false;
+                checkWSSelection();
+                drawWSGrid();
+            };
+        }
+
+        function getWSCellPos(e) {
+            const canvas = document.getElementById('ws-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            return {
+                r: Math.min(Math.max(0, Math.floor(y / wsCellSize)), wsGridSize - 1),
+                c: Math.min(Math.max(0, Math.floor(x / wsCellSize)), wsGridSize - 1)
+            };
+        }
+
+        function drawWSGrid() {
+            const canvas = document.getElementById('ws-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let r = 0; r < wsGridSize; r++) {
+                for (let c = 0; c < wsGridSize; c++) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.roundRect(c * wsCellSize + 1, r * wsCellSize + 1, wsCellSize - 2, wsCellSize - 2, 6);
+                    ctx.fill();
+                    ctx.strokeStyle = '#fde047';
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#1e293b';
+                    ctx.font = 'bold 16px Fredoka';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(wsGrid[r][c], c * wsCellSize + wsCellSize / 2, r * wsCellSize + wsCellSize / 2);
+                }
+            }
+
+            if (wsIsSelecting && wsStartCell && wsCurrentCell) {
+                ctx.strokeStyle = 'rgba(236, 72, 153, 0.5)';
+                ctx.lineWidth = 20;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(wsStartCell.c * wsCellSize + wsCellSize/2, wsStartCell.r * wsCellSize + wsCellSize/2);
+                ctx.lineTo(wsCurrentCell.c * wsCellSize + wsCellSize/2, wsCurrentCell.r * wsCellSize + wsCellSize/2);
+                ctx.stroke();
+            }
+        }
+
+        function checkWSSelection() {
+            if (!wsStartCell || !wsCurrentCell) return;
+            
+            let selectedWord = '';
+            const dr = wsCurrentCell.r - wsStartCell.r;
+            const dc = wsCurrentCell.c - wsStartCell.c;
+
+            if (dr === 0 || dc === 0) {
+                const stepR = dr === 0 ? 0 : (dr > 0 ? 1 : -1);
+                const stepC = dc === 0 ? 0 : (dc > 0 ? 1 : -1);
+                const len = Math.max(Math.abs(dr), Math.abs(dc)) + 1;
+
+                for (let i = 0; i < len; i++) {
+                    const r = wsStartCell.r + i * stepR;
+                    const c = wsStartCell.c + i * stepC;
+                    selectedWord += wsGrid[r][c];
+                }
+
+                if (wsWords.includes(selectedWord) && !wsFoundWords.includes(selectedWord)) {
+                    playSound('correct');
+                    wsFoundWords.push(selectedWord);
+                    renderWSWordList();
+                    if (wsFoundWords.length === wsWords.length) {
+                        setTimeout(triggerWinCelebration, 500);
+                    }
+                } else {
+                    playSound('wrong');
+                }
+            }
+        }
+
+        function renderWSWordList() {
+            const ul = document.getElementById('ws-word-list');
+            ul.innerHTML = '';
+            wsWords.forEach(w => {
+                const isFound = wsFoundWords.includes(w);
+                ul.innerHTML += `
+                    <li class="flex items-center gap-1.5 ${isFound ? 'line-through text-emerald-600' : 'text-slate-700'}">
+                        <span>${isFound ? '✅' : '📌'}</span> ${w}
+                    </li>
+                `;
+            });
+        }
+
+        // ================= GAME 3: PENJUMLAHAN RUMPANG (3 Soal) =================
+        const fvQuestions = [
+            { eq: ['12', '+', '___', '=', '20'], correct: 8, options: [6, 8, 10, 12] },
+            { eq: ['15', '+', '15', '=', '___'], correct: 30, options: [25, 28, 30, 35] },
+            { eq: ['___', '+', '7', '=', '15'], correct: 8, options: [7, 8, 9, 10] }
+        ];
+        let fvIndex = 0;
+
+        function initFillVowel() {
+            fvIndex = 0;
+            loadFVQuestion();
+        }
+
+        function loadFVQuestion() {
+            const q = fvQuestions[fvIndex];
+            document.getElementById('fv-question-number').innerText = `Soal ${fvIndex + 1} dari ${fvQuestions.length}`;
+
+            const display = document.getElementById('fv-equation-display');
+            display.innerHTML = '';
+
+            q.eq.forEach(item => {
+                if (item === '___') {
+                    display.innerHTML += `
+                        <div class="w-16 h-16 bg-amber-100 border-4 border-dashed border-amber-500 rounded-2xl flex items-center justify-center text-3xl font-black text-amber-700 animate-pulse">
+                            ?
+                        </div>
+                    `;
+                } else {
+                    display.innerHTML += `
+                        <span class="text-3xl md:text-4xl font-black text-indigo-900">${item}</span>
+                    `;
+                }
+            });
+
+            const optContainer = document.getElementById('fv-options');
+            optContainer.innerHTML = '';
+            const shuffledOpt = [...q.options].sort(() => Math.random() - 0.5);
+
+            shuffledOpt.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-bounce bg-indigo-500 hover:bg-indigo-600 text-white text-2xl font-black px-6 py-4 rounded-2xl border-b-4 border-indigo-700 shadow-lg min-w-[80px]';
+                btn.innerText = opt;
+                btn.onclick = () => handleFVAnswer(opt);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function handleFVAnswer(val) {
+            const q = fvQuestions[fvIndex];
+            if (val === q.correct) {
+                playSound('correct');
+                fvIndex++;
+                if (fvIndex < fvQuestions.length) {
+                    setTimeout(loadFVQuestion, 600);
+                } else {
+                    setTimeout(triggerWinCelebration, 600);
+                }
+            } else {
+                playSound('wrong');
+            }
+        }
+
+        // ================= GAME 4: WORD SCRAMBLE (3 Soal) =================
+        const scrambleData = [
+            { word: 'MATEMATIKA', hint: 'Ilmu tentang angka, pola, dan perhitungan' },
+            { word: 'BILANGAN', hint: 'Konsep matematika yang digunakan untuk pencacahan dan pengukuran' },
+            { word: 'KELIPATAN', hint: 'Hasil kali suatu bilangan dengan bilangan bulat positif' }
+        ];
+        let scrambleIndex = 0;
+        let scrambleCurrentSlots = [];
+
+        function initScramble() {
+            scrambleIndex = 0;
+            loadScrambleQuestion();
+        }
+
+        function loadScrambleQuestion() {
+            const q = scrambleData[scrambleIndex];
+            document.getElementById('ws-question-number').innerText = `Kata ${scrambleIndex + 1} dari ${scrambleData.length}`;
+            document.getElementById('ws-hint').innerText = q.hint;
+
+            scrambleCurrentSlots = Array(q.word.length).fill(null);
+            
+            let letters = q.word.split('').sort(() => Math.random() - 0.5);
+            if (letters.join('') === q.word) {
+                letters.reverse();
+            }
+
+            renderScrambleBoard(letters);
+        }
+
+        function renderScrambleBoard(shuffledLetters) {
+            const slotsContainer = document.getElementById('scramble-slots');
+            const tilesContainer = document.getElementById('scramble-tiles');
+            
+            slotsContainer.innerHTML = '';
+            tilesContainer.innerHTML = '';
+
+            scrambleCurrentSlots.forEach((char, idx) => {
+                const slot = document.createElement('div');
+                slot.className = 'w-10 h-12 md:w-12 md:h-14 bg-purple-100 rounded-xl border-2 border-purple-300 flex items-center justify-center text-xl md:text-2xl font-black text-purple-900 cursor-pointer shadow-sm';
+                slot.innerText = char ? char : '';
+                slot.onclick = () => removeScrambleLetter(idx);
+                slotsContainer.appendChild(slot);
+            });
+
+            if (shuffledLetters) {
+                tilesContainer.dataset.initial = JSON.stringify(shuffledLetters);
+            }
+            const currentTiles = JSON.parse(tilesContainer.dataset.initial || '[]');
+
+            currentTiles.forEach((char, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-bounce w-10 h-12 md:w-12 md:h-14 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-xl md:text-2xl font-black shadow-md border-b-4 border-purple-700';
+                btn.innerText = char;
+                btn.onclick = () => pickScrambleLetter(char, idx, btn);
+                tilesContainer.appendChild(btn);
+            });
+        }
+
+        function pickScrambleLetter(char, tileIdx, btnEl) {
+            const emptyIdx = scrambleCurrentSlots.indexOf(null);
+            if (emptyIdx !== -1) {
+                playSound('pop');
+                scrambleCurrentSlots[emptyIdx] = char;
+                btnEl.style.visibility = 'hidden';
+                btnEl.disabled = true;
+
+                const slotsContainer = document.getElementById('scramble-slots');
+                slotsContainer.children[emptyIdx].innerText = char;
+
+                if (!scrambleCurrentSlots.includes(null)) {
+                    const fullWord = scrambleCurrentSlots.join('');
+                    if (fullWord === scrambleData[scrambleIndex].word) {
+                        playSound('correct');
+                        setTimeout(() => {
+                            scrambleIndex++;
+                            if (scrambleIndex < scrambleData.length) {
+                                loadScrambleQuestion();
+                            } else {
+                                triggerWinCelebration();
+                            }
+                        }, 800);
+                    } else {
+                        playSound('wrong');
+                    }
+                }
+            }
+        }
+
+        function removeScrambleLetter(slotIdx) {
+            if (scrambleCurrentSlots[slotIdx]) {
+                playSound('pop');
+                scrambleCurrentSlots[slotIdx] = null;
+                loadScrambleQuestion();
+            }
+        }
+
+        // ================= GAME 5: MATCH SHAPES (4 Bentuk Geometri) =================
+        const shapeGeometries = [
+            { name: 'Segitiga', svg: '<svg class="w-12 h-12 text-rose-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2z"/></svg>' },
+            { name: 'Persegi', svg: '<svg class="w-12 h-12 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' },
+            { name: 'Lingkaran', svg: '<svg class="w-12 h-12 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>' },
+            { name: 'Belah Ketupat', svg: '<svg class="w-12 h-12 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg>' }
+        ];
+
+        let selectedShapeA = null;
+        let matchedShapeCount = 0;
+
+        function initMatchShapes() {
+            selectedShapeA = null;
+            matchedShapeCount = 0;
+
+            const groupA = document.getElementById('shapes-group-a');
+            const groupB = document.getElementById('shapes-group-b');
+            groupA.innerHTML = '';
+            groupB.innerHTML = '';
+
+            const shuffledA = [...shapeGeometries].sort(() => Math.random() - 0.5);
+            const shuffledB = [...shapeGeometries].sort(() => Math.random() - 0.5);
+
+            shuffledA.forEach((item) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-bounce shape-a w-24 h-24 bg-white border-4 border-pink-300 rounded-2xl flex flex-col items-center justify-center p-2 shadow-md gap-1';
+                btn.innerHTML = `${item.svg}<span class="text-xs font-black text-slate-700">${item.name}</span>`;
+                btn.onclick = () => selectShapeA(btn, item.name);
+                groupA.appendChild(btn);
+            });
+
+            shuffledB.forEach((item) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-bounce shape-b w-24 h-24 bg-white border-4 border-blue-300 rounded-2xl flex flex-col items-center justify-center p-2 shadow-md gap-1';
+                btn.innerHTML = `${item.svg}<span class="text-xs font-black text-slate-700">${item.name}</span>`;
+                btn.onclick = () => selectShapeB(btn, item.name);
+                groupB.appendChild(btn);
+            });
+        }
+
+        function selectShapeA(btn, shapeName) {
+            playSound('pop');
+            document.querySelectorAll('.shape-a').forEach(b => b.classList.remove('border-pink-600', 'bg-pink-100', 'ring-4', 'ring-pink-400'));
+            btn.classList.add('border-pink-600', 'bg-pink-100', 'ring-4', 'ring-pink-400');
+            selectedShapeA = { btn, name: shapeName };
+        }
+
+        function selectShapeB(btn, shapeName) {
+            if (!selectedShapeA) return;
+
+            if (selectedShapeA.name === shapeName) {
+                playSound('correct');
+                selectedShapeA.btn.classList.add('opacity-30', 'pointer-events-none');
+                btn.classList.add('opacity-30', 'pointer-events-none');
+                selectedShapeA = null;
+                matchedShapeCount++;
+
+                if (matchedShapeCount === 4) {
+                    setTimeout(triggerWinCelebration, 500);
+                }
+            } else {
+                playSound('wrong');
+            }
+        }
+
+        // ================= GAME 6: ARRANGE ORDER (NO TEXT ON CARDS) =================
+        const orderVariations = [
+            {
+                title: 'Pola 1: Urutkan dari TERKECIL ke TERBESAR 📈',
+                badge: 'Variasi 1 dari 2',
+                cards: [
+                    { id: 1, count: 3, emoji: '🍎', order: 1 },
+                    { id: 2, count: 6, emoji: '🍎', order: 2 },
+                    { id: 3, count: 9, emoji: '🍎', order: 3 },
+                    { id: 4, count: 12, emoji: '🍎', order: 4 }
+                ]
+            },
+            {
+                title: 'Pola 2: Urutkan dari TERBESAR ke TERKECIL 📉',
+                badge: 'Variasi 2 dari 2',
+                cards: [
+                    { id: 1, count: 16, emoji: '🍊', order: 1 },
+                    { id: 2, count: 12, emoji: '🍊', order: 2 },
+                    { id: 3, count: 8, emoji: '🍊', order: 3 },
+                    { id: 4, count: 4, emoji: '🍊', order: 4 }
+                ]
+            }
+        ];
+
+        let currentVariationIndex = 0;
+        let currentOrderState = [null, null, null, null];
+
+        function initArrangeOrder() {
+            currentVariationIndex = 0;
+            loadOrderVariation();
+        }
+
+        function loadOrderVariation() {
+            currentOrderState = [null, null, null, null];
+            const varData = orderVariations[currentVariationIndex];
+
+            document.getElementById('order-level-badge').innerText = varData.badge;
+            document.getElementById('order-story-title').innerText = varData.title;
+
+            const slots = document.getElementById('order-slots');
+            const sources = document.getElementById('order-sources');
+            slots.innerHTML = '';
+            sources.innerHTML = '';
+
+            for (let i = 0; i < 4; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'min-h-[130px] bg-white rounded-2xl border-4 border-dashed border-orange-300 flex flex-col items-center justify-center p-2 relative';
+                slot.innerHTML = `<span class="absolute top-2 left-3 text-xs font-black text-orange-400">Urutan ${i+1}</span><div class="slot-content flex flex-col items-center justify-center w-full h-full"></div>`;
+                
+                slot.addEventListener('dragover', (e) => e.preventDefault());
+                slot.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const cardData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    placeOrderCard(cardData, i);
+                });
+
+                slots.appendChild(slot);
+            }
+
+            const shuffled = [...varData.cards].sort(() => Math.random() - 0.5);
+            shuffled.forEach(card => {
+                const el = document.createElement('div');
+                el.id = `order-card-${card.id}`;
+                el.draggable = true;
+                el.className = 'bg-white rounded-2xl border-2 border-orange-300 flex flex-col items-center justify-center cursor-grab btn-bounce shadow p-2 text-center min-h-[100px]';
+                
+                // PURE VISUALS ONLY - NO TEXT!
+                el.innerHTML = renderEmojiRepeatedPure(card.emoji, card.count);
+                
+                el.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', JSON.stringify(card));
+                    playSound('pop');
+                });
+
+                el.onclick = () => {
+                    const firstEmpty = currentOrderState.indexOf(null);
+                    if (firstEmpty !== -1) {
+                        placeOrderCard(card, firstEmpty);
+                    }
+                };
+
+                sources.appendChild(el);
+            });
+        }
+
+        function placeOrderCard(card, slotIdx) {
+            playSound('pop');
+            currentOrderState[slotIdx] = card.order;
+
+            const slot = document.getElementById('order-slots').children[slotIdx];
+            const sourceCard = document.getElementById(`order-card-${card.id}`);
+
+            slot.querySelector('.slot-content').innerHTML = renderEmojiRepeatedPure(card.emoji, card.count);
+            sourceCard.style.visibility = 'hidden';
+
+            if (!currentOrderState.includes(null)) {
+                const isCorrect = currentOrderState.every((val, idx) => val === idx + 1);
+                if (isCorrect) {
+                    playSound('correct');
+                    currentVariationIndex++;
+                    if (currentVariationIndex < orderVariations.length) {
+                        setTimeout(loadOrderVariation, 800);
+                    } else {
+                        setTimeout(triggerWinCelebration, 800);
+                    }
+                } else {
+                    playSound('wrong');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
